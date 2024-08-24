@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -7,8 +8,9 @@ using XaniAPI.Entites;
 
 namespace XaniAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = "Basic")]
     public class FeedController(IConfiguration configuration, LikeDbContext likeDbContext, PostDbContext postDbContext) : ControllerBase
     {
         private readonly PostDbContext postDbContext = postDbContext;
