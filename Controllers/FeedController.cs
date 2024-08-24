@@ -19,13 +19,16 @@ namespace XaniAPI.Controllers
         [HttpGet]
         public ActionResult<Feed> Get(Int32 u_id)
         {
-            var feed = new Feed();
+            var feed = new Feed
+            {
+                f_datetime_generated = DateTime.Now,
+                f_u_id = u_id,
+                f_items = [.. postDbContext.Database.SqlQuery<Feed.Item>(@$"
 
-            feed.feed_list = [.. postDbContext.Database.SqlQuery<Feed.Item>(@$"
-
-                SELECT      p_text AS f_p_text,
-                            p_datetime AS f_p_datetime,
-                            u_handle AS f_u_handle,
+                SELECT      p_content AS f_p_content,
+                            p_datetime_created AS f_p_datetime_created,
+                            p_datetime_edited AS f_p_datetime_edited,
+                            u_username AS f_u_username,
 						    COUNT (l_id) AS f_pi_likes,
 						    COUNT (r.r_id) AS f_pi_repost,
 						    COUNT (q.r_id) AS f_pi_quote
@@ -34,11 +37,12 @@ namespace XaniAPI.Controllers
                 JOIN        [user] ON p_u_id = u_id 
                 JOIN        follow ON (f_u_id_followed = u_id AND f_u_id_audience = {u_id})
                 LEFT JOIN   [like] ON (l_p_id = p_id AND l_ls_id = 0)
-                LEFT JOIN   repost as r ON (r.r_p_id = p_id AND r.r_text is null)
-                LEFT JOIN   repost as q ON (q.r_p_id = p_id AND q.r_text is not null)
+                LEFT JOIN   repost as r ON (r.r_p_id = p_id AND r.r_content is null)
+                LEFT JOIN   repost as q ON (q.r_p_id = p_id AND q.r_content is not null)
 
-                GROUP BY    p_text, p_datetime, u_handle
-                ORDER       BY p_datetime DESC ")];
+                GROUP BY    p_content, p_datetime_created, p_datetime_edited, u_id, u_username
+                ORDER       BY p_datetime_created DESC ")]
+            };
 
 
             return new ActionResult<Feed>(feed);

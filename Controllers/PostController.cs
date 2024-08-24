@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using XaniAPI.DatabaseContexts;
 using XaniAPI.Entites;
 
@@ -8,9 +9,9 @@ namespace XaniAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PostController(IConfiguration configuration, PostDbContext postContext, LikeDbContext likeContext, RepostDbContext repostDbContext) : ControllerBase
+    public class PostController(IConfiguration configuration, PostDbContext postDbContext, LikeDbContext likeContext, RepostDbContext repostDbContext) : ControllerBase
     {
-        private readonly PostDbContext postDbContext = postContext;
+        private readonly PostDbContext postDbContext = postDbContext;
         private readonly LikeDbContext likeDbContext = likeContext;
         private readonly RepostDbContext repostDbContext = repostDbContext;
         private readonly IConfiguration configuration = configuration;
@@ -30,30 +31,64 @@ namespace XaniAPI.Controllers
                 post.p_info = new Post.Info()
                 {
                     pi_likes = likeDbContext.Like.Count(c => c.l_p_id.Equals(p_id)),
-                    pi_repost = repostDbContext.Repost.Count (c=> c.r_p_id.Equals(p_id) && string.IsNullOrWhiteSpace(c.r_text)),
-                    pi_quote = repostDbContext.Repost.Count(c => c.r_p_id.Equals(p_id) && !string.IsNullOrWhiteSpace(c.r_text)),
+                    pi_repost = repostDbContext.Repost.Count (c=> c.r_p_id.Equals(p_id) && string.IsNullOrWhiteSpace(c.r_content)),
+                    pi_quote = repostDbContext.Repost.Count(c => c.r_p_id.Equals(p_id) && !string.IsNullOrWhiteSpace(c.r_content)),
                 };
 
                 return post;
             }
         }
 
-        // POST api/<Post>
+        // Example payload
+        //{
+        //  "p_u_id": 2,
+        //  "p_datetime": "2024-08-24T11:16:38.100",
+        //  "p_content": "I'm at this resort in Portugal, going around on my motorised scooter like her from Benidorm.  One of the things that is difficult to explain to people is that it's really annoying to have people blocking entrances, exits, bars, self service food with themselves and chairs....",
+        //  "p_ps_id": 0
+        // }
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<Post> Post(Post post)
         {
+            postDbContext.Post.Add(post);
+            postDbContext.SaveChanges();
+
+            return CreatedAtAction(nameof(Get), new { id = post.p_id }, null);
         }
 
-        // PUT api/<Post>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // Example payload
+        //{
+        //  "p_id": 8,
+        //  "p_u_id": 2,
+        //  "p_datetime": "2024-08-24T11:16:38.100",
+        //  "p_content": "Ukraine has ratified amendments made in February to the UK-Ukraine trade deal, which will see Ukraine have zero tariff access to the UK market for five years (until March 2029). The UK can only do this due to Brexit.",
+        //  "p_ps_id": 0
+        // }
+        [HttpPut]
+        public ActionResult<Post> Put(Post post)
         {
-        }
+            /* fail if the primary key is already in use */
+            var existingPost= postDbContext.Post.FirstOrDefault(x => x.p_id.Equals(post.p_id));
+            if (existingPost == null)
+            {
+                return NotFound();
+            }
 
-        // DELETE api/<Post>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            else if (!existingPost.p_u_id.Equals(post.p_u_id))
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, $"User ids do not match");
+            }
+
+            else
+            {
+                existingPost.p_content = post.p_content;
+                existingPost.p_datetime_edited = existingPost.p_datetime_edited == null ? DateTime.Now.Date : existingPost.p_datetime_edited; 
+                postDbContext.SaveChanges();
+
+                return CreatedAtAction(nameof(Get), new { id = post.p_id }, null);
+            }
+         
+                
+          
         }
     }
 }
