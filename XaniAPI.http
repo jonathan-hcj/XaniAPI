@@ -1,0 +1,6 @@
+@XaniAPI_HostAddress = http://localhost:5138
+
+GET {{XaniAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
