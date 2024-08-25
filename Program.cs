@@ -89,8 +89,9 @@ if (app.Environment.IsDevelopment())
         options.DocumentTitle = "Xani API";
         //options.DisplayRequestDuration();
         //options.EnableFilter();
-        options.InjectStylesheet("/assets/css/xanicustom.css");
-    });
+        options.InjectJavascript("/assets/xanicustom.js", "text/javascript");
+         options.InjectStylesheet("/assets/xanicustom.css");
+   });
 }
 
 //app.MapGet("/api/feed", () => "This endpoint requires authorization")

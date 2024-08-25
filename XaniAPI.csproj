@@ -8,12 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\assets\css\xanicustom.css" />
+    <Content Remove="wwwroot\assets\xanicustom.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\assets\css\xanicustom.css">
+    <EmbeddedResource Include="wwwroot\assets\xanicustom.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\assets\xanicustom.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
@@ -27,10 +30,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.2" />
     <PackageReference Include="System.Collections.NonGeneric" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\assets\images\" />
   </ItemGroup>
 
 </Project>
