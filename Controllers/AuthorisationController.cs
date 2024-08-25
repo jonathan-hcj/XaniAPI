@@ -12,6 +12,24 @@ namespace XaniAPI.Controllers
         private readonly UserDbContext userDbContext = userDbContext;
         private readonly IConfiguration configuration = configuration;
 
+
+        /// <summary>
+        /// Gets an authorisation token
+        /// </summary>
+        /// <param name="request">This is the user id Int32</param>
+        /// <returns>An authoristion response</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST 
+        ///     {
+        ///        "u_id": 2,
+        ///        "u_password_hash": "5Gh6353=="
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="201">Returns the newly created item</response>
+        /// <response code="404">The user has not been found or the password hash is invalid</response>
         [HttpPost]
         public ActionResult<AuthorisationResponse> Post(AuthorisationRequest request)
         {

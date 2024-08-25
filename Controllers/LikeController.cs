@@ -6,6 +6,22 @@ using XaniAPI.Entites;
 
 namespace XaniAPI.Controllers
 {
+    /// <summary>
+    /// Gets a users feed
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns>A newly created TodoItem</returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     POST 
+    ///     {
+    ///        "u_id": 1,
+    ///     }
+    ///
+    /// </remarks>
+    /// <response code="201">Returns the newly created item</response>
+    /// <response code="400">If the item is null</response>
     [Route("api/[controller]")]
     [ApiController]
     public class LikeController(IConfiguration configuration, LikeDbContext context) : ControllerBase

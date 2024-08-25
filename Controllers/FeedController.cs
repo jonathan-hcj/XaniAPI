@@ -7,6 +7,7 @@ using XaniAPI.DatabaseContexts;
 using XaniAPI.Entites;
 
 namespace XaniAPI.Controllers
+
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -17,6 +18,22 @@ namespace XaniAPI.Controllers
         private readonly LikeDbContext likeDbContext = likeDbContext;
         private readonly IConfiguration configuration = configuration;
 
+        /// <summary>
+        /// Gets a users feed
+        /// </summary>
+        /// <param name="u_id">This is the user id Int32</param>
+        /// <returns>A newly created TodoItem</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST 
+        ///     {
+        ///        "u_id": 1,
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="201">Returns the newly created item</response>
+        /// <response code="400">If the item is null</response>
         // GET: api/<FeedController>
         [HttpGet]
         public ActionResult<Feed> Get(Int32 u_id)

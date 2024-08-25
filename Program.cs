@@ -3,18 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication;
 using XaniAPI;
+using Microsoft.Net.Http.Headers;
+using Microsoft.Extensions.Options;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-
 
 builder.Services.AddAuthentication(x =>
 {
@@ -37,10 +37,15 @@ builder.Services.AddDbContext<RepostDbContext>(option =>
     option.UseSqlServer(connectionString));
 
 /* offer the opportunity to authorise */
-builder.Services.AddSwaggerGen(opt =>
+builder.Services.AddSwaggerGen(options =>
 {
-    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
-    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+        Title = "Xani API", 
+        Version = "v1", 
+        Description = "Simple social media micro-blogging site much in the style of twitter." 
+    });
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
         Description = "Please enter token",
@@ -49,7 +54,7 @@ builder.Services.AddSwaggerGen(opt =>
         BearerFormat = "JWT",
         Scheme = "bearer"
     });
-    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -63,6 +68,11 @@ builder.Services.AddSwaggerGen(opt =>
             new string[]{ }
         }
     });
+
+    // using System.Reflection;
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
 });
 
 var app = builder.Build();
@@ -71,13 +81,23 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
+    app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
+    {
+        //options.SwaggerEndpoint("/swagger/v1/swagger.json", "Geo API");
+        //options.RoutePrefix = "docs";
+        options.DocumentTitle = "Xani API";
+        //options.DisplayRequestDuration();
+        //options.EnableFilter();
+        options.InjectStylesheet("/assets/css/xanicustom.css");
+    });
 }
 
 //app.MapGet("/api/feed", () => "This endpoint requires authorization")
 //    .RequireAuthorization();
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
