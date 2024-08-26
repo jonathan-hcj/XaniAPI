@@ -70,7 +70,7 @@ namespace XaniAPI
                 else
                 {
                     var authHeader = AuthenticationHeaderValue.Parse(Request.Headers.Authorization);
-                    if (authHeader == null || !TokenRepostitory.ValidateToken(authHeader.Parameter))
+                    if (authHeader == null || TokenRepostitory.ValidateToken(authHeader.Parameter) == null)
                     {
                         errorMessage = "No valid token supplied";
                     }

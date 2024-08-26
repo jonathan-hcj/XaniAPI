@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections;
+using System.Net.Http.Headers;
 using XaniAPI.DatabaseContexts;
 using XaniAPI.Entities;
 
@@ -7,9 +8,12 @@ using XaniAPI.Entities;
 
 namespace XaniAPI.Controllers
 {
+    /// <summary>
+    /// User management
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController (IConfiguration configuration, UserDbContext userDbContext) : ControllerBase
+    public class UserController(IConfiguration configuration, UserDbContext userDbContext) : ControllerBase
     {
         private readonly UserDbContext userDbContext = userDbContext;
         private readonly IConfiguration configuration = configuration;
@@ -30,10 +34,67 @@ namespace XaniAPI.Controllers
         {
         }
 
+        /// <summary>
+        /// Gets an single post and its interaction stats
+        /// </summary>
+        /// <param name="userList">This is list of users to update</param>
+        /// <returns>An authoristion response</returns>
+        /// <remarks>
+        /// </remarks>
+        /// <response code="201">Returns the newly created item</response>
+        /// <response code="404">The post has not been found</response>
         // PUT api/<ValuesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public void Put(User[] userList)
         {
+            var settings = configuration.GetSection("Settings");
+            var authHeader = AuthenticationHeaderValue.Parse(Request.Headers.Authorization);
+            var token = TokenRepostitory.ValidateToken(authHeader.Parameter);
+
+            if (settings.GetValue<bool>("BulkUpdateUsers"))
+            {
+                foreach(var user in userList)
+                {
+                    var userRecord = userDbContext.User.FirstOrDefault(x => x.u_id.Equals(user.u_id));
+                    if (userRecord != null)
+                    {
+                        DuckCopyShallow<User>(userRecord,user);
+                    }
+                    else
+                    {
+                        userDbContext.User.Add(user);
+                    }
+                }
+                userDbContext.SaveChanges();
+            }
+            else
+            { 
+
+
+            }
+        }
+
+        private static void DuckCopyShallow<T>(T dst, T src)
+        {
+            var srcT = src.GetType();
+            var dstT = dst.GetType();
+
+            foreach (var f in srcT.GetFields())
+            {
+                var dstF = dstT.GetField(f.Name);
+                if (dstF == null || dstF.IsLiteral)
+                    continue;
+                dstF.SetValue(dst, f.GetValue(src));
+            }
+
+            foreach (var f in srcT.GetProperties())
+            {
+                var dstF = dstT.GetProperty(f.Name);
+                if (dstF == null)
+                    continue;
+
+                dstF.SetValue(dst, f.GetValue(src, null), null);
+            }
         }
     }
 }

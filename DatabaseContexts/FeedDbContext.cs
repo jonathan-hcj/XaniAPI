@@ -11,7 +11,7 @@ namespace XaniAPI.DatabaseContexts
         {
         }
 
-        public FeedDbContext(DbContextOptions<LikeDbContext> options) : base(options)
+        public FeedDbContext(DbContextOptions<FeedDbContext> options) : base(options)
         {
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

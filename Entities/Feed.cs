@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace XaniAPI.Entities
@@ -6,9 +7,10 @@ namespace XaniAPI.Entities
     /// <summary>
     /// 
     /// </summary>
-
+    [Keyless]
     public class Feed
     {
+
         public DateTime? f_datetime_generated { get; set; }
         public int f_u_id { get; set; }
         public IEnumerable<Item>? f_items { get; set; }

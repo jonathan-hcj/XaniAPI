@@ -35,19 +35,19 @@ namespace XaniAPI.Entities
         /// <summary>
         /// 
         /// </summary>
-        public static bool ValidateToken(string? u_token)
+        public static Token? ValidateToken(string? u_token)
         {
-            var result = false;
+            Token? token = null;
 
             if (u_token != null && currentTokens.TryGetValue(u_token, out Token? value))
             {
                 if (value.t_u_token != null && value.t_u_token.Equals(u_token) && DateTime.Now < value.t_expires)
                 {
-                    result = true;
+                    token = value;
                 }
             }
 
-            return result;
+            return token;
         }
 
         public class Token
