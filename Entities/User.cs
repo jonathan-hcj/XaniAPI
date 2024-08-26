@@ -1,13 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace XaniAPI.Entites
+namespace XaniAPI.Entities
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class User
     {
         [Key]
-        public Int32 u_id { get; set; }
+        public int u_id { get; set; }
 
-        [MaxLength(50, ErrorMessage = "Handle must be 50 characters or less"),MinLength(0)]
+        [MaxLength(50, ErrorMessage = "Handle must be 50 characters or less"), MinLength(0)]
         public string? u_username { get; set; }
 
         [MaxLength(100, ErrorMessage = "Email address must be 100 characters or less"), MinLength(0)]

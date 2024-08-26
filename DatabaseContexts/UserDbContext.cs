@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using XaniAPI.Entites;
+using XaniAPI.Entities;
 
 namespace XaniAPI.DatabaseContexts
 {

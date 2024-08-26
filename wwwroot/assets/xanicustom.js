@@ -1,19 +1,21 @@
 ﻿(function () { 
     window.addEventListener("load", function () {
         setTimeout(function () {
+
+        //    alert();
             // Section 01 - Set url link 
-            var logo = document.getElementsByClassName('link');
+          //  var logo = document.getElementsByClassName('link');
 
-            if (logo != null {
-                logo[0].href = "http://test.no/";
-                logo[0].target = "_blank"; 
+            //if (logo != null) {
+            //    logo[0].href = "http://test.no/";
+            //    logo[0].target = "_blank"; 
  
-                // Section 02 - Set logo
-                logo[0].children[0].alt = "Xani app API";
-                logo[0].children[0].src = "/swagger-ui/assets/logo.png"; 
+            //    // Section 02 - Set logo
+            //    logo[0].children[0].alt = "Xani app API";
+            //    logo[0].children[0].src = "/swagger-ui/assets/logo.png"; 
 
 
-            }
+            //}
 
  
             // Section 03 - Set 32x32 favicon

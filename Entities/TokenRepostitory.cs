@@ -1,15 +1,21 @@
 ﻿using Azure.Core;
 using Azure;
 
-namespace XaniAPI.Entites
+namespace XaniAPI.Entities
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class TokenRepostitory
     {
-        private static readonly Dictionary<Int32, Token> currentTokens = [];
+        private static readonly Dictionary<string, Token> currentTokens = [];
 
-        public static void RecordToken(Int32 u_id, string u_token)
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void RecordToken(string u_token, int u_id)
         {
-            if (currentTokens.TryGetValue(u_id, out Token? value))
+            if (currentTokens.TryGetValue(u_token, out Token? value))
             {
                 value.t_u_token = u_token;
                 value.t_u_id = u_id;
@@ -17,7 +23,7 @@ namespace XaniAPI.Entites
             }
             else
             {
-                currentTokens.Add(u_id, new Token
+                currentTokens.Add(u_token, new Token
                 {
                     t_u_token = u_token,
                     t_u_id = u_id,
@@ -26,11 +32,14 @@ namespace XaniAPI.Entites
             }
         }
 
-        public static bool ValidateToken(Int32 u_id, string u_token)
+        /// <summary>
+        /// 
+        /// </summary>
+        public static bool ValidateToken(string? u_token)
         {
             var result = false;
 
-            if (currentTokens.TryGetValue(u_id, out Token? value))
+            if (u_token != null && currentTokens.TryGetValue(u_token, out Token? value))
             {
                 if (value.t_u_token != null && value.t_u_token.Equals(u_token) && DateTime.Now < value.t_expires)
                 {
@@ -43,7 +52,7 @@ namespace XaniAPI.Entites
 
         public class Token
         {
-            public Int32 t_u_id;
+            public int t_u_id;
             public string? t_u_token;
             public DateTime t_expires;
         }

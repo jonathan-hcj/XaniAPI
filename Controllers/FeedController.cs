@@ -4,11 +4,23 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System;
 using XaniAPI.DatabaseContexts;
-using XaniAPI.Entites;
+using XaniAPI.Entities;
 
 namespace XaniAPI.Controllers
 
 {
+    /// <summary>
+    /// Feed management, this is likley to be the most complicated part of the software at 
+    /// it curates the users experience.
+    /// 
+    /// Version 1: returns the posts belonging to those users you follow.
+    /// </summary>
+    /// <param name="configuration"></param>
+    /// <param name="likeDbContext"></param>
+    /// <param name="postDbContext"></param>
+    /// <returns>A newly created TodoItem</returns>
+    /// <remarks>
+    /// </remarks>
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = "Basic")]
@@ -32,10 +44,12 @@ namespace XaniAPI.Controllers
         ///     }
         ///
         /// </remarks>
-        /// <response code="201">Returns the newly created item</response>
+        /// <response code="201">Returns the json encoded list of posts to display</response>
         /// <response code="400">If the item is null</response>
         // GET: api/<FeedController>
         [HttpGet]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
         public ActionResult<Feed> Get(Int32 u_id)
         {
             var feed = new Feed
@@ -62,7 +76,6 @@ namespace XaniAPI.Controllers
                 GROUP BY    p_content, p_datetime_created, p_datetime_edited, u_id, u_username
                 ORDER       BY p_datetime_created DESC ")]
             };
-
 
             return new ActionResult<Feed>(feed);
         }

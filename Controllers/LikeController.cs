@@ -1,27 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XaniAPI.DatabaseContexts;
-using XaniAPI.Entites;
+using XaniAPI.Entities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace XaniAPI.Controllers
 {
     /// <summary>
-    /// Gets a users feed
+    /// Manages the like functionality for the app
     /// </summary>
-    /// <param name="item"></param>
+    /// <param name="configuration"></param>
+    /// <param name="context"></param>
     /// <returns>A newly created TodoItem</returns>
     /// <remarks>
-    /// Sample request:
-    ///
-    ///     POST 
-    ///     {
-    ///        "u_id": 1,
-    ///     }
-    ///
+    /// Likes can be added, and set inactive, they cannot be deleted
     /// </remarks>
-    /// <response code="201">Returns the newly created item</response>
-    /// <response code="400">If the item is null</response>
     [Route("api/[controller]")]
     [ApiController]
     public class LikeController(IConfiguration configuration, LikeDbContext context) : ControllerBase

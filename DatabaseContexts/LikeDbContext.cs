@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
-using XaniAPI.Entites;
+using XaniAPI.Entities;
 
 namespace XaniAPI.DatabaseContexts
 {

@@ -1,49 +1,95 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
-using XaniAPI.Entites;
+using XaniAPI.Entities;
 
 namespace XaniAPI
-{
+{    
+    /// <summary>
+    /// Authorisation handler
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns>creates a new post</returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    /// </remarks>
     public class MyAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        public MyAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : base(options, logger, encoder)
+
+        /// <summary>
+        /// Gets a users feed
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="options"></param>
+        /// <param name="logger"></param>
+        /// <param name="encoder"></param>
+        /// <returns>A newly created TodoItem</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST 
+        ///     {
+        ///        "u_id": 1,
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="201">Returns the newly created item</response>
+        /// <response code="400">If the item is null</response>
+        private IConfiguration configuration;
+
+        /// <summary>
+        /// Constructor - additionally pulls through the configuration interface
+        /// </summary>
+        public MyAuthenticationHandler(IConfiguration configuration, IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : base(options, logger, encoder)
         {
+            this.configuration = configuration;
         }
 
-        [Obsolete]
-        public MyAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
-        {
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            if (!Request.Headers.ContainsKey("Authorization"))
-                return Task.FromResult(AuthenticateResult.Fail("No authorization header"));
+            var errorMessage = "";
+            var settings = configuration.GetSection("Settings");
 
-            try
+            if (settings.GetValue<bool>("RequireAuthentication"))
             {
-                var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
+                if (Request.Headers == null)
+                    errorMessage = "No authorization header";
 
-                if (authHeader.Scheme.Equals("Bearer") && !String.IsNullOrEmpty(authHeader.Parameter))
+                else if (Request.Headers.Authorization.IsNullOrEmpty())
+                    errorMessage = "No authorization header";
+
+                else
                 {
-                    if (TokenRepostitory.ValidateToken(2, authHeader.Parameter))
+                    var authHeader = AuthenticationHeaderValue.Parse(Request.Headers.Authorization);
+                    if (authHeader == null || !TokenRepostitory.ValidateToken(authHeader.Parameter))
                     {
-                        var claims = new[] { new Claim(ClaimTypes.Name, "") };
-                        var identity = new ClaimsIdentity(claims, Scheme.Name);
-                        var principal = new ClaimsPrincipal(identity);
-                        var ticket = new AuthenticationTicket(principal, Scheme.Name);
-
-                        return Task.FromResult(AuthenticateResult.Success(ticket));
+                        errorMessage = "No valid token supplied";
                     }
                 }
             }
-            catch { }
 
-            return Task.FromResult(AuthenticateResult.Fail("Unauthorized user"));
+            if (string.IsNullOrWhiteSpace(errorMessage))
+            {
+                var claims = new[] { new Claim(ClaimTypes.Name, "") };
+                var identity = new ClaimsIdentity(claims, Scheme.Name);
+                var principal = new ClaimsPrincipal(identity);
+                var ticket = new AuthenticationTicket(principal, Scheme.Name);
+
+                return Task.FromResult(AuthenticateResult.Success(ticket));
+            }
+            else
+            {
+                return Task.FromResult(AuthenticateResult.Fail(errorMessage));
+            }
         }
     }
 }

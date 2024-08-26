@@ -1,11 +1,10 @@
 using XaniAPI.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication;
 using XaniAPI;
-using Microsoft.Net.Http.Headers;
-using Microsoft.Extensions.Options;
 using System.Reflection;
+using Swashbuckle.AspNetCore.SwaggerUI;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,11 +38,22 @@ builder.Services.AddDbContext<RepostDbContext>(option =>
 /* offer the opportunity to authorise */
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo 
+    options.SwaggerDoc("v1", new OpenApiInfo
     { 
         Title = "Xani API", 
         Version = "v1", 
-        Description = "Simple social media micro-blogging site much in the style of twitter." 
+        Description = "Simple social media micro-blogging site much in the style of twitter." ,
+        Contact = new OpenApiContact() 
+        { 
+            Name = "Jonathan Campbell Jones", 
+            Email = "jonathan.cj@ntlworld.com", 
+            Url = new Uri("https://www.bbc.com") 
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Employee API LICX",
+            Url = new Uri("https://example.com/license"),
+        }
     });
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -65,7 +75,7 @@ builder.Services.AddSwaggerGen(options =>
                     Id = "Bearer"
                 }
             },
-            new string[]{ }
+            Array.Empty<string>()
         }
     });
 
@@ -84,14 +94,11 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
     app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
     {
-        //options.SwaggerEndpoint("/swagger/v1/swagger.json", "Geo API");
-        //options.RoutePrefix = "docs";
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Xani API V1");
         options.DocumentTitle = "Xani API";
-        //options.DisplayRequestDuration();
-        //options.EnableFilter();
-        options.InjectJavascript("/assets/xanicustom.js", "text/javascript");
-         options.InjectStylesheet("/assets/xanicustom.css");
-   });
+        //options.InjectJavascript("/assets/xanicustom.js", "text/javascript");
+        options.InjectStylesheet("/assets/xanicustom.css");
+    });
 }
 
 //app.MapGet("/api/feed", () => "This endpoint requires authorization")

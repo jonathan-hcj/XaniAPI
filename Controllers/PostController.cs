@@ -7,6 +7,15 @@ using XaniAPI.Entites;
 
 namespace XaniAPI.Controllers
 {
+    /// <summary>
+    /// Gets a users feed
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns>creates a new post</returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    /// </remarks>
     [Route("api/[controller]")]
     [ApiController]
     public class PostController(IConfiguration configuration, PostDbContext postDbContext, LikeDbContext likeContext, RepostDbContext repostDbContext) : ControllerBase
@@ -16,7 +25,15 @@ namespace XaniAPI.Controllers
         private readonly RepostDbContext repostDbContext = repostDbContext;
         private readonly IConfiguration configuration = configuration;
 
-        // GET: api/<Post>
+        /// <summary>
+        /// Gets an single post and its interaction stats
+        /// </summary>
+        /// <param name="p_id">This is the post id id Int64</param>
+        /// <returns>An authoristion response</returns>
+        /// <remarks>
+        /// </remarks>
+        /// <response code="201">Returns the newly created item</response>
+        /// <response code="404">The post has not been found</response>
         [HttpGet]
         public ActionResult<Post> Get(Int64 p_id)
         {
