@@ -47,7 +47,7 @@ namespace XaniAPI.Controllers
         /// <response code="201">Returns the json encoded list of posts to display</response>
         /// <response code="400">If the item is null</response>
         // GET: api/<FeedController>
-        [HttpGet]
+        [HttpGet()]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         public ActionResult<Feed> Get(Int32 u_id)

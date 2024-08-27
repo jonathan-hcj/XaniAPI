@@ -110,3 +110,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+
+
+//http://localhost/Xani/api/feed?u_id=3
