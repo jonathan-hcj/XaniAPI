@@ -17,22 +17,12 @@ namespace XaniAPI
     /// </remarks>
     public class MyAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-
         /// <summary>
-        /// Gets a users feed
+        /// Manages the authentication tokens
         /// </summary>
-        /// <returns>A newly created TodoItem</returns>
         /// <remarks>
-        /// Sample request:
-        ///
-        ///     POST 
-        ///     {
-        ///        "u_id": 1,
-        ///     }
-        ///
+        /// The tokens themselves are held in the static class TokenRepositorn.
         /// </remarks>
-        /// <response code="201">Returns the newly created item</response>
-        /// <response code="400">If the item is null</response>
         private IConfiguration configuration;
 
         /// <summary>
@@ -50,6 +40,7 @@ namespace XaniAPI
         {
             var errorMessage = "";
             var settings = configuration.GetSection("Settings");
+            var timestamp = DateTime.Now;
 
             if (settings.GetValue<bool>("RequireAuthentication"))
             {
@@ -62,11 +53,14 @@ namespace XaniAPI
                 else
                 {
                     var authHeader = AuthenticationHeaderValue.Parse(Request.Headers.Authorization);
-                    if (authHeader == null || TokenRepostitory.ValidateToken(authHeader.Parameter) == null)
+                    if (authHeader == null || TokenRepostitory.ValidateToken(timestamp, authHeader.Parameter) == null)
                     {
                         errorMessage = "No valid token supplied";
                     }
                 }
+
+                /* clean up the token dictionaary */
+                TokenRepostitory.PurgeLapsedTokens(timestamp);
             }
 
             if (string.IsNullOrWhiteSpace(errorMessage))

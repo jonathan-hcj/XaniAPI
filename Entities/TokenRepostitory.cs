@@ -35,13 +35,13 @@ namespace XaniAPI.Entities
         /// <summary>
         /// 
         /// </summary>
-        public static Token? ValidateToken(string? u_token)
+        public static Token? ValidateToken(DateTime timestamp, string? u_token)
         {
             Token? token = null;
 
             if (u_token != null && currentTokens.TryGetValue(u_token, out Token? value))
             {
-                if (value.t_u_token != null && value.t_u_token.Equals(u_token) && DateTime.Now < value.t_expires)
+                if (value.t_u_token != null && value.t_u_token.Equals(u_token) && timestamp < value.t_expires)
                 {
                     token = value;
                 }
@@ -51,8 +51,44 @@ namespace XaniAPI.Entities
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public static void PurgeLapsedTokens(DateTime timestamp)
+        {
+            var lapsedTokenList = currentTokens.Where(x => x.Value.t_expires < timestamp).Select(y=> y.Value.t_u_token);
+
+            foreach (var lapsedToken in lapsedTokenList)
+            {
+                if (!string.IsNullOrWhiteSpace(lapsedToken))
+                {
+                    currentTokens.Remove(lapsedToken);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static Token? GetToken(string? u_token)
+        {
+            Token? token = null;
+
+            if (u_token != null && currentTokens.TryGetValue(u_token, out Token? value))
+            {
+                if (value.t_u_token != null && value.t_u_token.Equals(u_token))
+                {
+                    token = value;
+                }
+            }
+
+            return token;
+        }
+
+
+        /// <summary>
         /// Token 
-        /// These volotile objects are held in a dictionary
+        /// These volatile objects are held in a dictionary so they'll clear whenever the API restarts
+        /// should be secure as they aren't stored on media anywhere.
         /// </summary>
         public class Token
         {

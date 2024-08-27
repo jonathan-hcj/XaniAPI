@@ -38,12 +38,7 @@ namespace XaniAPI.Controllers
         /// <returns>A newly created TodoItem</returns>
         /// <remarks>
         /// Sample request:
-        ///
-        ///     POST 
-        ///     {
-        ///        "u_id": 1,
-        ///     }
-        ///
+        /// http://localhost/Xani/api/feed?u_id=2
         /// </remarks>
         /// <response code="201">Returns the json encoded list of posts to display</response>
         /// <response code="400">If the item is null</response>
@@ -177,20 +172,10 @@ namespace XaniAPI.Controllers
 
                     GROUP BY    p.p_id, p.p_content, p.p_datetime_created, p.p_datetime_edited, p.p_id_quote_of, p.p_id_reply_to, u_id, u_username
                     ORDER       BY p.p_datetime_created DESC")];
-
-
-
-
                     break;
             }
 
             return new ActionResult<Feed>(feed);
         }
-
-        public class IdRow
-        {
-            public Int64 p_id { get; set; }
-        }
-
     }
 }

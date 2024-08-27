@@ -46,7 +46,7 @@ namespace XaniAPI.Controllers
         {
             var settings = configuration.GetSection("Settings");
             var authHeader = AuthenticationHeaderValue.Parse(Request.Headers.Authorization);
-            var token = TokenRepostitory.ValidateToken(authHeader.Parameter);
+            var token = TokenRepostitory.GetToken(authHeader.Parameter);
 
             if (settings.GetValue<bool>("BulkUpdateUsers"))
             {
