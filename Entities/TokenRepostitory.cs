@@ -13,13 +13,13 @@ namespace XaniAPI.Entities
         /// <summary>
         /// 
         /// </summary>
-        public static void RecordToken(string u_token, int u_id)
+        public static void RecordToken(DateTime timestamp, string u_token, int u_id)
         {
             if (currentTokens.TryGetValue(u_token, out Token? value))
             {
                 value.t_u_token = u_token;
                 value.t_u_id = u_id;
-                value.t_expires = DateTime.Now.AddMinutes(10);
+                value.t_expires = timestamp.AddMinutes(10);
             }
             else
             {
@@ -27,7 +27,7 @@ namespace XaniAPI.Entities
                 {
                     t_u_token = u_token,
                     t_u_id = u_id,
-                    t_expires = DateTime.Now.AddMinutes(10)
+                    t_expires = timestamp.AddMinutes(10)
                 });
             }
         }
@@ -50,6 +50,10 @@ namespace XaniAPI.Entities
             return token;
         }
 
+        /// <summary>
+        /// Token 
+        /// These volotile objects are held in a dictionary
+        /// </summary>
         public class Token
         {
             public int t_u_id;

@@ -17,9 +17,17 @@ namespace XaniAPI.Entities
 
         public class Item
         {
+            public Int64 f_p_id { get; set; }
             public string? f_p_content { get; set; }
             public DateTime? f_p_datetime_created { get; set; }
             public DateTime? f_p_datetime_edited { get; set; }
+
+            public Int64? f_p_id_quote_of { get; set; }
+            public Int64? f_p_id_reply_to { get; set; }
+
+
+
+
             public string? f_u_username { get; set; }
 
             public int f_pi_likes { get; set; }

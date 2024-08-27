@@ -32,8 +32,6 @@ builder.Services.AddDbContext<UserDbContext>(option =>
     option.UseSqlServer(connectionString));
 builder.Services.AddDbContext<FeedDbContext>(option =>
     option.UseSqlServer(connectionString));
-builder.Services.AddDbContext<RepostDbContext>(option =>
-    option.UseSqlServer(connectionString));
 
 /* offer the opportunity to authorise */
 builder.Services.AddSwaggerGen(options =>

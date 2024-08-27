@@ -19,8 +19,9 @@ namespace XaniAPI.Entites
         public DateTime? p_datetime_created { get; set; }
         public DateTime? p_datetime_edited { get; set; }
         public Int16 p_ps_id { get; set; }
-        public Int64? p_reply_to_p_id { get; set; }
- 
+        public Int64? p_id_quote_of { get; set; }
+        public Int64? p_id_reply_to { get; set; }
+
 
         [NotMapped]
         public Info? p_info { get; set; }

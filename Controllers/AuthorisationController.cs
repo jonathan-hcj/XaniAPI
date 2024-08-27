@@ -5,8 +5,12 @@ using XaniAPI.Entities;
 
 namespace XaniAPI.Controllers
 {
+    /// <summary>
+    /// Authorization Controller
+    /// if the user exists anf the password hash matched, caches a token and returns it to the cient
+    /// </summary>
     [Route("api/[controller]")]
-   [ApiController]
+    [ApiController]
     public class AuthorisationController(IConfiguration configuration, UserDbContext userDbContext ): ControllerBase
     {
         private readonly UserDbContext userDbContext = userDbContext;
@@ -34,6 +38,8 @@ namespace XaniAPI.Controllers
         [HttpPost]
         public ActionResult<AuthorisationResponse> Post(AuthorisationRequest request)
         {
+            var timestamp = DateTime.Now;
+
             var user = userDbContext.User.FirstOrDefault(x => x.u_id.Equals(request.u_id) && x.u_password_hash != null && x.u_password_hash.Equals(request.u_password_hash));
             if (user == null)
             {
@@ -47,7 +53,7 @@ namespace XaniAPI.Controllers
                     u_token = Guid.NewGuid().ToString()
                 };
 
-                TokenRepostitory.RecordToken(response.u_token, request.u_id);
+                TokenRepostitory.RecordToken(timestamp, response.u_token, request.u_id);
 
                 return response;
             }

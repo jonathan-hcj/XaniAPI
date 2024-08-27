@@ -12,11 +12,10 @@ namespace XaniAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class PostController(IConfiguration configuration, PostDbContext postDbContext, LikeDbContext likeContext, RepostDbContext repostDbContext) : ControllerBase
+    public class PostController(IConfiguration configuration, PostDbContext postDbContext, LikeDbContext likeContext) : ControllerBase
     {
         private readonly PostDbContext postDbContext = postDbContext;
         private readonly LikeDbContext likeDbContext = likeContext;
-        private readonly RepostDbContext repostDbContext = repostDbContext;
         private readonly IConfiguration configuration = configuration;
 
         /// <summary>
@@ -42,8 +41,8 @@ namespace XaniAPI.Controllers
                 post.p_info = new Post.Info()
                 {
                     pi_likes = likeDbContext.Like.Count(c => c.l_p_id.Equals(p_id)),
-                    pi_repost = repostDbContext.Repost.Count (c=> c.r_p_id.Equals(p_id) && string.IsNullOrWhiteSpace(c.r_content)),
-                    pi_quote = repostDbContext.Repost.Count(c => c.r_p_id.Equals(p_id) && !string.IsNullOrWhiteSpace(c.r_content)),
+                    pi_repost = postDbContext.Post.Count(c => c.p_id_reply_to.Equals(p_id)),
+                    pi_quote = postDbContext.Post.Count(c => c.p_id_quote_of.Equals(p_id)),
                 };
 
                 return post;
