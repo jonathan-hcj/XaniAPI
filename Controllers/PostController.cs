@@ -8,14 +8,8 @@ using XaniAPI.Entites;
 namespace XaniAPI.Controllers
 {
     /// <summary>
-    /// Gets a users feed
+    /// Post controller deals with individual posts rather than a feed
     /// </summary>
-    /// <param name="item"></param>
-    /// <returns>creates a new post</returns>
-    /// <remarks>
-    /// Sample request:
-    ///
-    /// </remarks>
     [Route("api/[controller]")]
     [ApiController]
     public class PostController(IConfiguration configuration, PostDbContext postDbContext, LikeDbContext likeContext, RepostDbContext repostDbContext) : ControllerBase
@@ -103,9 +97,6 @@ namespace XaniAPI.Controllers
 
                 return CreatedAtAction(nameof(Get), new { id = post.p_id }, null);
             }
-         
-                
-          
         }
     }
 }

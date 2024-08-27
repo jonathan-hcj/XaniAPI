@@ -4,12 +4,10 @@ using System.Net.Http.Headers;
 using XaniAPI.DatabaseContexts;
 using XaniAPI.Entities;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace XaniAPI.Controllers
 {
     /// <summary>
-    /// User management
+    /// User management controller
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -35,7 +33,7 @@ namespace XaniAPI.Controllers
         }
 
         /// <summary>
-        /// Gets an single post and its interaction stats
+        /// Updates or adds one or more users 
         /// </summary>
         /// <param name="userList">This is list of users to update</param>
         /// <returns>An authoristion response</returns>
@@ -43,7 +41,6 @@ namespace XaniAPI.Controllers
         /// </remarks>
         /// <response code="201">Returns the newly created item</response>
         /// <response code="404">The post has not been found</response>
-        // PUT api/<ValuesController>/5
         [HttpPut]
         public void Put(User[] userList)
         {
@@ -58,7 +55,7 @@ namespace XaniAPI.Controllers
                     var userRecord = userDbContext.User.FirstOrDefault(x => x.u_id.Equals(user.u_id));
                     if (userRecord != null)
                     {
-                        DuckCopyShallow<User>(userRecord,user);
+                        Helpers.DuckCopyShallow<User>(userRecord,user);
                     }
                     else
                     {
@@ -74,27 +71,6 @@ namespace XaniAPI.Controllers
             }
         }
 
-        private static void DuckCopyShallow<T>(T dst, T src)
-        {
-            var srcT = src.GetType();
-            var dstT = dst.GetType();
 
-            foreach (var f in srcT.GetFields())
-            {
-                var dstF = dstT.GetField(f.Name);
-                if (dstF == null || dstF.IsLiteral)
-                    continue;
-                dstF.SetValue(dst, f.GetValue(src));
-            }
-
-            foreach (var f in srcT.GetProperties())
-            {
-                var dstF = dstT.GetProperty(f.Name);
-                if (dstF == null)
-                    continue;
-
-                dstF.SetValue(dst, f.GetValue(src, null), null);
-            }
-        }
     }
 }

@@ -13,11 +13,7 @@ namespace XaniAPI
     /// <summary>
     /// Authorisation handler
     /// </summary>
-    /// <param name="item"></param>
-    /// <returns>creates a new post</returns>
     /// <remarks>
-    /// Sample request:
-    ///
     /// </remarks>
     public class MyAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
@@ -25,10 +21,6 @@ namespace XaniAPI
         /// <summary>
         /// Gets a users feed
         /// </summary>
-        /// <param name="configuration"></param>
-        /// <param name="options"></param>
-        /// <param name="logger"></param>
-        /// <param name="encoder"></param>
         /// <returns>A newly created TodoItem</returns>
         /// <remarks>
         /// Sample request:
