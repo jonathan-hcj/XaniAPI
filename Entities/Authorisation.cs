@@ -1,20 +1,21 @@
 ﻿namespace XaniAPI.Entities
 {
     /// <summary>
-    /// 
+    /// Authorisation API objects
+    /// the reuest is the user name and the password hash (SHA-256)
     /// </summary>
     public class AuthorisationRequest
     {
-        public int u_id { get; set; }
-        public string? u_password_hash { get; set; }
+        public string username { get; set; } = "";
+        public string password_hash { get; set; } = "";
     }
 
     /// <summary>
-    /// 
+    /// The response, if found is the user is and the current token */
     /// </summary>
     public class AuthorisationResponse
     {
-        public int u_id { get; set; }
-        public string? u_token { get; set; }
+        public int id { get; set; }
+        public string? token { get; set; }
     }
 }
