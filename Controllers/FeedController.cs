@@ -132,10 +132,10 @@ namespace XaniAPI.Controllers
                                 p.p_datetime_edited AS p_datetime_edited,
 			                    p.p_id_quote_of AS p_id_quote_of,
 			                    p.p_id_reply_to AS p_id_reply_to,
-		                        (SELECT COUNT (l_id) FROM [like] AS l WHERE l.l_p_id = p.p_id AND l.l_ls_id = 0) AS pi_likes,
-                                (SELECT COUNT (p_id) FROM post AS po WHERE po.p_id_quote_of = p.p_id AND ISNULL(po.p_content, '') = '') AS pi_repost,
-                                (SELECT COUNT (p_id) FROM post AS po WHERE po.p_id_quote_of = p.p_id AND ISNULL(po.p_content, '') <> '') AS pi_quote,
-                                (SELECT COUNT (p_id) FROM post AS po WHERE po.p_id_reply_to = p.p_id) AS pi_replies
+		                        (SELECT COUNT (l_id) FROM [like] AS l WHERE l.l_p_id = p.p_id AND l.l_ls_id = 0) AS p_total_likes,
+                                (SELECT COUNT (p_id) FROM post AS po WHERE po.p_id_quote_of = p.p_id AND ISNULL(po.p_content, '') = '') AS p_total_reposts,
+                                (SELECT COUNT (p_id) FROM post AS po WHERE po.p_id_quote_of = p.p_id AND ISNULL(po.p_content, '') <> '') AS p_total_quotes,
+                                (SELECT COUNT (p_id) FROM post AS po WHERE po.p_id_reply_to = p.p_id) AS p_total_replies
 
                 FROM            post as p
                 WHERE           p.p_id IN (SELECT id FROM @idList) 
@@ -146,7 +146,8 @@ namespace XaniAPI.Controllers
                 SELECT DISTINCT u.u_id AS u_id, 
                                 u.u_username AS u_username,
                                 u.u_avitar AS u_avitar,
-                                u.u_description AS u_description
+                                u.u_description AS u_description,
+                                u.u_joined_date AS u_joined_date
                 FROM            [user] as u
                 JOIN		    post AS p ON p.p_u_id = u.u_id
                 WHERE		    p.p_id IN (SELECT id FROM @idList) ", param).ToList()];

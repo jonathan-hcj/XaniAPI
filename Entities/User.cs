@@ -17,5 +17,6 @@ namespace XaniAPI.Entities
         public string? u_password_hash { get; set; }
         [MaxLength(200, ErrorMessage = "The description hash must be 200 characters or less"), MinLength(0)]
         public string? u_description { get; set; }
+        public DateTime? u_joined_date { get; set; }
     }
 }
